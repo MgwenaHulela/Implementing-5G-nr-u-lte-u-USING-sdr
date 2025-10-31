@@ -92,9 +92,7 @@ Wi-Fi baselines and NR-U transmissions share the same 20 MHz channel to test coe
 All measured data and plots are in:  
 ```
 results/
-├── wifi_baseline/
-├── nru_logs/
-└── coexistence_plots/
+
 ```
 
 ---
