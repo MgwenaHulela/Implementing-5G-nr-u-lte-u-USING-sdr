@@ -1,4 +1,4 @@
-# Implementing 5G NR-U and LTE-U Using SDR  
+# 5G New Radio Communication over Wi-Fi 5 GHz Unlicensed Band using an SDR Platfor 
 **University of Cape Town – Final Year Engineering Project (2025)**  
 **Author:** Innocent Nhlanhla Makhubela  
 **Supervisor:** Prof. Joyce Mwangama  
@@ -8,7 +8,7 @@
 ---
 
 ## Overview
-This project demonstrates 5G NR-U (New Radio in Unlicensed) and LTE-U (LTE-Unlicensed) communication over the 5 GHz unlicensed band using Software-Defined Radio (SDR) platforms.  
+This project demonstrates 5G NR-U (New Radio in Unlicensed) communication over the 5 GHz unlicensed band using Software-Defined Radio (SDR) platforms.  
 It aims to experimentally validate that 5G NR-U can coexist fairly with Wi-Fi—that is, operate without diminishing Wi-Fi performance.
 
 The repository includes:
