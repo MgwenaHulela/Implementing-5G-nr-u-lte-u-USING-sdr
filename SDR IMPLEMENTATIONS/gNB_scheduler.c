@@ -21,7 +21,7 @@
 
 /*! \file gNB_scheduler.c
  * \brief gNB scheduler top level function operates on per subframe basis
- * \author Navid Nikaein, Raymond Knopp, WEI-TAI CHEN
+ * \author Navid Nikaein, Raymond Knopp, WEI-TAI CHEN updated by Makhubela Innocent( NRU LBT PART)
  * \date 2010-2025
  * \version 1.0
  */
@@ -94,7 +94,7 @@ static void nru_create_dummy_ue(module_id_t module_idP)
     // Use the proper UE creation function - pass NULL for CellGroup (PHY test mode)
     NR_UE_info_t *ue = get_new_nr_ue_inst(&UE_info->uid_allocator, rnti, NULL);
     if (!ue) {
-        LOG_E(MAC, "[NRU][DUMMY-UE] ❌ Failed to create UE instance\n");
+        LOG_E(MAC, "[NRU][DUMMY-UE]  Failed to create UE instance\n");
         return;
     }
 
@@ -112,14 +112,14 @@ static void nru_create_dummy_ue(module_id_t module_idP)
     // Add UE to the connected list
     bool result = add_connected_nr_ue(gNB, ue);
     if (!result) {
-        LOG_W(MAC, "[NRU][DUMMY-UE] ❌ Failed to add dummy UE to connected list\n");
+        LOG_W(MAC, "[NRU][DUMMY-UE]  Failed to add dummy UE to connected list\n");
         // Note: add_connected_nr_ue already handles cleanup on failure
         dummy_ue_created = true;
         return;
     }
 
     dummy_ue_created = true;
-    LOG_I(MAC, "[NRU][DUMMY-UE] ✅ Created dummy UE (RNTI=0x%04x, UID=%d)\n", rnti, ue->uid);
+    LOG_I(MAC, "[NRU][DUMMY-UE]  Created dummy UE (RNTI=0x%04x, UID=%d)\n", rnti, ue->uid);
 }
 
 
@@ -257,7 +257,7 @@ void gNB_dlsch_ulsch_scheduler(module_id_t module_idP,
   if (cfg && cfg->enabled) {
     bool is_prach = nr_is_prach_slot(module_idP, frame, slot);
     if (is_prach) {
-        // 🟢 Bypass LBT during PRACH RX/TX occasions
+        //  Bypass LBT during PRACH RX/TX occasions
         LOG_D(MAC, "[NRU][LBT] PRACH slot %d.%d → bypass sensing\n", frame, slot);
         channel_free = true;
     } else if (strcmp(cfg->mode, "LBE") == 0) {
@@ -285,13 +285,13 @@ void gNB_dlsch_ulsch_scheduler(module_id_t module_idP,
   if (IS_SA_MODE(get_softmodem_params())) {
     if (nru_lbt_sense_and_acquire(module_idP, -1)) {
         LOG_I(MAC,
-              "[NRU][SSB] 🚀 Channel free - scheduling BCH/SSB (frame=%d, slot=%d)\n",
+              "[NRU][SSB]  Channel free - scheduling BCH/SSB (frame=%d, slot=%d)\n",
               frame, slot);
         schedule_nr_mib(module_idP, frame, slot, &sched_info->DL_req);
 
     } else {
         LOG_I(MAC,
-              "[NRU][SSB] 🛑 Channel busy - skipping BCH/SSB (frame=%d, slot=%d)\n",
+              "[NRU][SSB]  Channel busy - skipping BCH/SSB (frame=%d, slot=%d)\n",
               frame, slot);
     }
 }
