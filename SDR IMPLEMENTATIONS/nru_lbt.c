@@ -3,7 +3,7 @@
  * -------------------------------
  * Complete Listen-Before-Talk module for NR-U experiments with USRP-based sensing.
  * Works seamlessly with the C++ helper (nru_uhd_helper.cpp) for real RSSI measurements.
- * Author: Innocent Nhlanhla Makhubela (University of Cape Town)
+ * Author: Innocent Nhlanhla  (University of Cape Town)
  * Date: 2025-10-21
  */
 
@@ -201,7 +201,7 @@ int nru_lbt_sense_and_acquire(int gnb_id, int required_us) {
         }
 
         if (nru_cfg_global.log_lbt)
-            LOG_I(MAC, "[NRU][FBE] offset=%.2fms TX=%s\n", off/1000.0, tx_ok?"✅":"⛔");
+            LOG_I(MAC, "[NRU][FBE] offset=%.2fms TX=%s\n", off/1000.0, tx_ok?"":"");
         return tx_ok;
     }
 
@@ -296,7 +296,7 @@ int nru_lbt_process_usrp_samples(void *samples, int len) {
 
     if (nru_cfg_global.log_lbt) {
         LOG_I(MAC, "[NRU][LBT] Sample window %d | Energy %.2f dBm | Thresh %.2f | %s\n",
-              len, energy, threshold, free ? "✅ FREE" : "❌ BUSY");
+              len, energy, threshold, free ? " FREE" : "BUSY");
     }
 
     if (free)
