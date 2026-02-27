@@ -840,7 +840,7 @@ void nru_reset_stats(void) {
     buffer_overflow_count.store(0);
     lbt_checks_performed.store(0);
     channel_busy_count.store(0);
-    std::cout << "[NRU][UHD] ✅ Statistics counters reset\n";
+    std::cout << "[NRU][UHD]  Statistics counters reset\n";
 }
 
 /**
@@ -849,7 +849,7 @@ void nru_reset_stats(void) {
 void nru_clear_buffer(void) {
     std::lock_guard<std::mutex> lock(buffer_mutex);
     sample_buffer.clear();
-    std::cout << "[NRU][UHD] 🧹 Buffer cleared\n";
+    std::cout << "[NRU][UHD]  Buffer cleared\n";
 }
 
 /**
