@@ -434,12 +434,12 @@ void nru_calibrate_noise_floor(int samples) {
         noise_floor_dbm = static_cast<float>(sum / valid_count);
         noise_calibrated = true;
         nru_config_ed_threshold_dbm = noise_floor_dbm + 8.0f;
-        std::cout << "[NRU][UHD] ✅ Noise floor: " << noise_floor_dbm
+        std::cout << "[NRU][UHD]  Noise floor: " << noise_floor_dbm
                   << " dBm (from " << valid_count << " valid samples)\n";
-        std::cout << "[NRU][UHD] ✅ ED threshold: "
+        std::cout << "[NRU][UHD]  ED threshold: "
                   << nru_config_ed_threshold_dbm << " dBm\n";
     } else {
-        std::cerr << "[NRU][UHD] ⚠️  Calibration failed (only "
+        std::cerr << "[NRU][UHD]   Calibration failed (only "
                   << valid_count << " valid samples)\n";
         return;
     }
@@ -466,7 +466,7 @@ void nru_calibrate_noise_floor(int samples) {
                 double dbfs = 10.0 * std::log10(std::max(sum_power / n, 1e-12));
                 calibration_offset_db = wifi_rssi_dbm - dbfs;
 
-                std::cout << "[NRU][CAL] ✅ Auto-calibration from Wi-Fi RSSI\n"
+                std::cout << "[NRU][CAL]  Auto-calibration from Wi-Fi RSSI\n"
                           << "    Wi-Fi RSSI : " << wifi_rssi_dbm << " dBm\n"
                           << "    Measured   : " << dbfs << " dBFS\n"
                           << "    Offset     : " << calibration_offset_db
