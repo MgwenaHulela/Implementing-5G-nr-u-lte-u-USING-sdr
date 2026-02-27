@@ -10,7 +10,7 @@
  * - Fast energy detection with caching
  * - ETSI EN 301 893 compliant LBT
  * 
- * Author: Integration for OAI NR-U
+ * Author: Integration for OAI NR-U Makhubela Innocent(MKHINN011)
  * Date: 2025
  */
 
@@ -473,13 +473,13 @@ void nru_calibrate_noise_floor(int samples) {
                           << " dB\n";
             }
         } else {
-            std::cerr << "[NRU][CAL] ⚠️  Could not parse Wi-Fi RSSI\n";
+            std::cerr << "[NRU][CAL]   Could not parse Wi-Fi RSSI\n";
         }
     } else {
-        std::cerr << "[NRU][CAL] ⚠️  Failed to execute iw command\n";
+        std::cerr << "[NRU][CAL]   Failed to execute iw command\n";
     }
 
-    std::cout << "[NRU][UHD] 🧩 Final calibration offset: "
+    std::cout << "[NRU][UHD]  Final calibration offset: "
               << calibration_offset_db << " dB\n";
 }
 
@@ -538,12 +538,12 @@ void nru_auto_calibrate_offset(float known_power_dbm) {
         float measured_dbfs = static_cast<float>(sum_dbfs / count);
         calibration_offset_db = known_power_dbm - measured_dbfs;
         
-        std::cout << "[NRU][UHD] ✅ Calibration offset: " 
+        std::cout << "[NRU][UHD]  Calibration offset: " 
                   << calibration_offset_db << " dB\n";
         std::cout << "[NRU][UHD] (Measured " << measured_dbfs 
                   << " dBFS for " << known_power_dbm << " dBm signal)\n";
     } else {
-        std::cerr << "[NRU][UHD] ⚠️  Auto-calibration failed\n";
+        std::cerr << "[NRU][UHD]   Auto-calibration failed\n";
     }
 }
 
@@ -574,11 +574,11 @@ float nru_get_noise_floor(void) {
  */
 static void sensing_stream_worker() {
     if (!global_usrp) {
-        std::cerr << "[NRU][STREAM] ❌ USRP not attached\n";
+        std::cerr << "[NRU][STREAM]  USRP not attached\n";
         return;
     }
     
-    std::cout << "[NRU][STREAM] 🚀 Starting dedicated sensing stream...\n";
+    std::cout << "[NRU][STREAM]  Starting dedicated sensing stream...\n";
     
     try {
         // Create separate RX stream for sensing
@@ -599,7 +599,7 @@ static void sensing_stream_worker() {
         stream_cmd.stream_now = true;
         sensing_rx_stream->issue_stream_cmd(stream_cmd);
         
-        std::cout << "[NRU][STREAM] ✅ Sensing stream started\n";
+        std::cout << "[NRU][STREAM]  Sensing stream started\n";
         std::cout << "[NRU][STREAM] Sample rate: " 
                   << (global_usrp->get_rx_rate(0) / 1e6) << " MSps\n";
         std::cout << "[NRU][STREAM] Frequency: " 
@@ -627,14 +627,14 @@ static void sensing_stream_worker() {
             if (md.error_code == uhd::rx_metadata_t::ERROR_CODE_OVERFLOW) {
                 error_count++;
                 if (error_count % 100 == 0) {
-                    std::cerr << "[NRU][STREAM] ⚠️  Overflow detected (count: " 
+                    std::cerr << "[NRU][STREAM]   Overflow detected (count: " 
                               << error_count << ")\n";
                 }
                 continue;
             }
             
             if (md.error_code != uhd::rx_metadata_t::ERROR_CODE_NONE) {
-                std::cerr << "[NRU][STREAM] ❌ Error: " << md.strerror() << "\n";
+                std::cerr << "[NRU][STREAM]  Error: " << md.strerror() << "\n";
                 continue;
             }
             
@@ -648,7 +648,7 @@ static void sensing_stream_worker() {
             auto now = std::chrono::steady_clock::now();
             if (std::chrono::duration_cast<std::chrono::seconds>(now - last_report).count() >= 10) {
                 float mbytes = (total_received * sizeof(std::complex<float>)) / (1024.0f * 1024.0f);
-                std::cout << "[NRU][STREAM] 📊 Received " << total_received 
+                std::cout << "[NRU][STREAM]  Received " << total_received 
                           << " samples (" << std::fixed << std::setprecision(2) 
                           << mbytes << " MB) | Errors: " << error_count << "\n";
                 last_report = now;
@@ -659,11 +659,11 @@ static void sensing_stream_worker() {
         stream_cmd.stream_mode = uhd::stream_cmd_t::STREAM_MODE_STOP_CONTINUOUS;
         sensing_rx_stream->issue_stream_cmd(stream_cmd);
         
-        std::cout << "[NRU][STREAM] 🛑 Sensing stream stopped\n";
+        std::cout << "[NRU][STREAM]  Sensing stream stopped\n";
         std::cout << "[NRU][STREAM] Total samples: " << total_received << "\n";
         
     } catch (const std::exception& e) {
-        std::cerr << "[NRU][STREAM] ❌ Exception: " << e.what() << "\n";
+        std::cerr << "[NRU][STREAM]  Exception: " << e.what() << "\n";
         sensing_thread_running.store(false, std::memory_order_relaxed);
     }
 }
@@ -676,12 +676,12 @@ static void sensing_stream_worker() {
 
 void nru_start_sensing_stream(void) {
     if (!global_usrp) {
-        std::cerr << "[NRU][STREAM] ❌ USRP not attached\n";
+        std::cerr << "[NRU][STREAM]  USRP not attached\n";
         return;
     }
 
     // DISABLED: No dedicated stream - using main OAI RX path
-    std::cout << "[NRU][STREAM] ✅ Using main RX stream for energy detection\n";
+    std::cout << "[NRU][STREAM]  Using main RX stream for energy detection\n";
     std::cout << "[NRU][STREAM] No dedicated sensing stream (prevents USB overflows)\n";
     
     sensing_thread_running.store(true, std::memory_order_relaxed);
@@ -690,7 +690,7 @@ void nru_start_sensing_stream(void) {
     cached_energy_dbm.store(noise_floor_dbm, std::memory_order_relaxed);
     last_measurement_time_us.store(get_time_us(), std::memory_order_relaxed);
     
-    std::cout << "[NRU][STREAM] ✅ Ready to receive samples from main RX path\n";
+    std::cout << "[NRU][STREAM]  Ready to receive samples from main RX path\n";
     
     // DO NOT start sensing_thread - no dedicated stream needed
 }
@@ -723,19 +723,19 @@ bool nru_is_sensing_active(void) {
  */
 void nru_attach_usrp(void *priv) {
     if (!priv) {
-        std::cerr << "[NRU][UHD] ❌ Null USRP handle\n";
+        std::cerr << "[NRU][UHD]  Null USRP handle\n";
         return;
     }
     
     global_usrp = *static_cast<uhd::usrp::multi_usrp::sptr*>(priv);
-    std::cout << "[NRU][UHD] ✅ Attached to USRP device\n";
+    std::cout << "[NRU][UHD]  Attached to USRP device\n";
     
     // Set thread priority for better real-time performance
     try {
         uhd::set_thread_priority_safe(0.9, true);
-        std::cout << "[NRU][UHD] ✅ Thread priority elevated\n";
+        std::cout << "[NRU][UHD]  Thread priority elevated\n";
     } catch (const std::exception& e) {
-        std::cerr << "[NRU][UHD] ⚠️  Thread priority: " << e.what() << "\n";
+        std::cerr << "[NRU][UHD]   Thread priority: " << e.what() << "\n";
     }
     
     // Get RX gain for info
@@ -759,7 +759,7 @@ void nru_attach_usrp(void *priv) {
     lbt_checks_performed.store(0, std::memory_order_relaxed);
     channel_busy_count.store(0, std::memory_order_relaxed);
     
-    std::cout << "[NRU][UHD] ✅ Ready for software-based energy detection\n";
+    std::cout << "[NRU][UHD]  Ready for software-based energy detection\n";
     
     // Auto-start sensing stream
     nru_start_sensing_stream();
@@ -781,7 +781,7 @@ void nru_cleanup(void) {
     }
     
     global_usrp = nullptr;
-    std::cout << "[NRU][UHD] ✅ Cleanup complete\n";
+    std::cout << "[NRU][UHD]  Cleanup complete\n";
 }
 
 /* ============================================
@@ -818,7 +818,7 @@ void nru_print_stats(void) {
     std::cout << "\n[NRU][STATS] ==========================================\n";
      std::cout << "[NRU][STATS] Energy: " << energy << " dBm"
               << " | Threshold: " << nru_config_ed_threshold_dbm
-              << " dBm | State: " << (is_free ? "✅ FREE" : "❌ BUSY") << "\n";
+              << " dBm | State: " << (is_free ? " FREE" : " BUSY") << "\n";
     std::cout << "[NRU][STATS] Cache age: " << cache_age << " µs\n";
     std::cout << "[NRU][STATS] Samples received: " << received
               << " | Dropped: " << dropped
